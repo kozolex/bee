@@ -11,7 +11,7 @@
 LiquidCrystal_I2C lcd(0x3F, 20, 4);
 DS3231 clock;
 RTCDateTime dt;
-HX711 waga;
+HX711 waga;     //fiolet 6 / zielony 7 / czerwony VCC / niebieski / GND
 char odczyt[6];
 float ciezar, ciezar_zmiana;
 
@@ -20,7 +20,7 @@ const int chipSelect = 4; //PIN SD CARD
 void setup() {
   clock.begin();                          //inicjalizacja RTC
   clock.setDateTime(__DATE__, __TIME__);  // Set sketch compiling time
-  waga.begin(A1, A2);                     //inicjalizacja wagi
+  waga.begin(7, 6);                     //inicjalizacja wagi
   lcd.begin();                            //inicjalizacja ekranu
   lcd.backlight();
   waga.set_scale(419341.0 / 1700);
@@ -40,6 +40,8 @@ void setup() {
   }
   lcd.println("card initialized.");
   delay(200);
+  
+  lcd.clear();
 }
 
 
@@ -61,7 +63,7 @@ void loop() {
     lcd.print(odczyt);  lcd.print(" g");
 
     lcd.setCursor(0, 1);
-    lcd.print(int(temperature)); lcd.print(" *C RTCt=");  lcd.print(clock.readTemperature());
+    lcd.print(int(temperature)); //lcd.print(" *C RTCt="); lcd.print(clock.readTemperature());
 
     lcd.setCursor(0, 2);
     lcd.print(humidity);  lcd.print(" %");
@@ -72,7 +74,7 @@ void loop() {
   ciezar_zmiana = ciezar;
   waga.power_up();
 
-  delay(900);
+  
   dataString += String(clock.dateFormat("d-m-Y H:i:s", dt));
   dataString += String(";");
   dataString += String(odczyt);
@@ -82,8 +84,8 @@ void loop() {
   dataString += String(clock.readTemperature());
   dataString += String(";");
   dataString += String(humidity);
-
-
+/*
+  delay(900);
   // if the file is available, write to it:
   lcd.setCursor(9, 0);
   if (dataFile) {
@@ -96,6 +98,7 @@ void loop() {
   else {
     lcd.print("  error    ");
   }
+  */
   delay(100);
   lcd.setCursor(9, 0);
   lcd.print("           ");
